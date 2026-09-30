@@ -1,0 +1,53 @@
+import random
+
+def volado(probabilidad):
+    """
+    Simula un lanzamiento de moneda.
+    probabilidad = probabilidad de obtener 'sol'.
+    """
+    if random.random() < probabilidad:
+        return "sol"
+    else:
+        return "águila"
+
+
+# 10 lanzamientos con probabilidad de sol = 0.4
+a = [volado(0.4) for i in range(10)]
+
+print(a)
+
+
+# 10 lanzamientos con probabilidad de sol = 0.7
+resultados = []
+
+for i in range(10):
+    resultado = volado(0.7)
+    resultados.append(resultado)
+
+print(resultados)
+
+# Contar cuántas veces salió "sol"
+print(resultados.count("sol"))
+
+
+# Simulación de 1000 experimentos
+p = []
+
+for i in range(1000):
+
+    N = 10
+    resultados = []
+
+    for j in range(N):
+        resultado = volado(0.8)
+        resultados.append(resultado)
+
+    n_soles = resultados.count("sol")
+    p_soles = n_soles / N
+    p.append(p_soles)
+
+
+# Probabilidad promedio
+p_soles_promedio = sum(p) / 1000
+
+print("Probabilidad {:.3f}".format(p_soles_promedio))
