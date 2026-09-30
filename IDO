@@ -1,0 +1,20 @@
+# Espacio muestral: resultados de lanzar dos dados
+resultados = [(dado1, dado2) for dado1 in range(1, 7)
+                              for dado2 in range(1, 7)]
+
+# Agrupar los resultados según la suma
+for suma in range(2, 13):
+    casos = [(dado1, dado2) for dado1, dado2 in resultados
+             if dado1 + dado2 == suma]
+
+    print(f"S({suma}) = {casos}")
+
+# Probabilidad de obtener una suma de 9
+suma_9 = [(dado1, dado2) for dado1, dado2 in resultados
+          if dado1 + dado2 == 9]
+
+probabilidad = len(suma_9) / len(resultados)
+
+print("\nResultados para suma 9:", suma_9)
+print("P(9) =", len(suma_9), "/", len(resultados))
+print("P(9) =", probabilidad)
