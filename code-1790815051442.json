@@ -1,0 +1,101 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Análisis Avanzado: Probabilidad y Densidad Normal\n",
+    "\n",
+    "**Objetivo:** Extender el trabajo con la distribución normal mediante cálculos comparativos, simulaciones empíricas y visualizaciones múltiples.\n",
+    "\n",
+    "## 1. La Distribución Normal y sus Parámetros\n",
+    "La forma de la distribución normal depende de dos parámetros calculados a partir de una población: la *media* ($\\mu$) y la *varianza* ($\\sigma^{2}$).\n",
+    "$$X\\sim N(\\mu, \\sigma^{2})$$\n",
+    "\n",
+    "La curva continua que aproxima el comportamiento de estos fenómenos se conoce como campana de Gauss, y está dada por la función de densidad de probabilidades:\n",
+    "$$f(x)=\\frac{1}{\\sigma \\sqrt{2\\pi}}\\exp\\left\\{-\\frac{(x-\\mu)^{2}}{2\\sigma^{2}} \\right\\}$$"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from scipy.stats import norm\n",
+    "import numpy as np\n",
+    "import matplotlib.pyplot as plt"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2. Comparación Visual de Parámetros\n",
+    "A continuación, graficaremos múltiples distribuciones para observar de forma directa las propiedades de la función:\n",
+    "1. Su simetría alrededor de $\\mu$.\n",
+    "2. Cómo el cambio en la varianza $\\sigma^2$ afecta la amplitud y altura del máximo global."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig, ax = plt.subplots(figsize=(9, 5))\n",
+    "x = np.arange(-7, 7, 0.01)\n",
+    "\n",
+    "# Graficando distintas variantes\n",
+    "ax.plot(x, norm.pdf(x, loc=0, scale=1), label='N(0, 1) - Estándar', color='blue', lw=2)\n",
+    "ax.plot(x, norm.pdf(x, loc=0, scale=2.5), label='N(0, 6.25) - Mayor varianza', color='orange', lw=2)\n",
+    "ax.plot(x, norm.pdf(x, loc=-3, scale=1), label='N(-3, 1) - Media desplazada', color='green', lw=2)\n",
+    "\n",
+    "ax.set_title('Comparación de Distribuciones Normales')\n",
+    "ax.set_xlabel('x')\n",
+    "ax.set_ylabel('f(x)')\n",
+    "ax.set_ylim(0, 0.45)\n",
+    "ax.legend()\n",
+    "plt.grid(True, alpha=0.3)\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 3. Simulación Empírica vs Curva Teórica\n",
+    "Para aplicar esto a un caso práctico, generaremos una muestra aleatoria de 1000 observaciones y verificaremos visualmente cómo su histograma se aproxima al área total bajo la curva continua."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Simulación de 1000 realizaciones del fenómeno aleatorio X\n",
+    "muestra = np.random.normal(loc=0, scale=1, size=1000)\n",
+    "\n",
+    "fig, ax = plt.subplots(figsize=(9, 5))\n",
+    "# Histograma de estadísticas empíricas\n",
+    "ax.hist(muestra, bins=30, density=True, alpha=0.5, color='teal', edgecolor='black', label='Histograma empírico')\n",
+    "\n",
+    "# Curva teórica superpuesta\n",
+    "ax.plot(x, norm.pdf(x, loc=0, scale=1), 'r-', lw=2.5, label='Curva Teórica N(0,1)')\n",
+    "\n",
+    "ax.set_title('Convergencia del Histograma a la Función de Densidad')\n",
+    "ax.set_xlim(-4, 4)\n",
+    "ax.legend()\n",
+    "plt.show()"
+   ]
+  }
+ ],
+ "metadata": {
+  "language_info": {
+   "name": "python"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
