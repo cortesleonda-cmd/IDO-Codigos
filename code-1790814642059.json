@@ -1,0 +1,119 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Análisis del Teorema del Límite Central y Variación Muestral\n",
+    "\n",
+    "**Objetivo:** Explorar cuantitativamente la distribución muestral de medias mediante simulación Monte Carlo vectorizada y la superposición de la densidad teórica según el Teorema del Límite Central (TLC).\n",
+    "\n",
+    "$$\\bar{X}_n \\sim \\mathcal{N}\\left(\\mu, \\frac{\\sigma^2}{n}\\right)$$"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import matplotlib.pyplot as plt\n",
+    "from scipy.stats import norm\n",
+    "\n",
+    "# Configuración visual\n",
+    "%matplotlib inline\n",
+    "plt.style.use('seaborn-v0_8-whitegrid')\n",
+    "np.random.seed(42)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 1. Muestreo Individual\n",
+    "Generación de una muestra aleatoria $X \\sim \\mathcal{N}(\\mu=10, \\sigma=5)$ con $n=35$."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "mu, sigma, n_size = 10, 5, 35\n",
+    "muestra = np.random.normal(loc=mu, scale=sigma, size=n_size)\n",
+    "\n",
+    "print(f'Media muestral : {muestra.mean():.4f}')\n",
+    "print(f'Desviación Std : {muestra.std(ddof=1):.4f}')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2. Simulación Monte Carlo Vectorizada ($N = 10,000$)\n",
+    "En lugar de iterar con un bucle `for`, generamos directamente una matriz de tamaño $N \\times n$ para optimizar la velocidad de cómputo."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "num_simulaciones = 10000\n",
+    "# Matriz bidimensional vectorizada (10000 filas x 35 columnas)\n",
+    "matriz_muestras = np.random.normal(loc=mu, scale=sigma, size=(num_simulaciones, n_size))\n",
+    "medias_muestrales = matriz_muestras.mean(axis=1)\n",
+    "\n",
+    "df_resultados = pd.DataFrame({'Media_Muestral': medias_muestrales})\n",
+    "df_resultados.describe()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 3. Visualización y Comparación Teórica"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(10, 6))\n",
+    "\n",
+    "# Histograma muestral\n",
+    "count, bins, ignored = plt.hist(medias_muestrales, bins=60, density=True, alpha=0.6, color='skyblue', edgecolor='black', label='Simulación Monte Carlo')\n",
+    "\n",
+    "# Densidad teórica del TLC\n",
+    "se_teorico = sigma / np.sqrt(n_size)\n",
+    "x_axis = np.linspace(mu - 4*se_teorico, mu + 4*se_teorico, 200)\n",
+    "plt.plot(x_axis, norm.pdf(x_axis, loc=mu, scale=se_teorico), 'r-', lw=2.5, label=f'Teórico TLC: N({mu}, {se_teorico:.2f}^2)')\n",
+    "\n",
+    "plt.title('Distribución Muestral de Medias vs. Densidad Teórica Normal', fontsize=14)\n",
+    "plt.xlabel('Media Muestral (\\bar{X})', fontsize=12)\n",
+    "plt.ylabel('Densidad', fontsize=12)\n",
+    "plt.legend(fontsize=11)\n",
+    "plt.show()"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "name": "python",
+   "version": "3.12"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
